@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+
+    <script>
+    window.onload = function(){
+      var ctx = document.getElementById("myChart");
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['<%= date6 %>', '<%= date5 %>', '<%= date4 %>', '<%= date3 %>', '<%= date2 %>', '<%= date1 %>', '<%= date0 %>'],
+          datasets: [
+            {
+              label: 'sick(%)',
+              data: [
+              <%= data6 %>,
+              <%= data5 %>,
+              <%= data4 %>,
+              <%= data3 %>,
+              <%= data2 %>,
+              <%= data1 %>,
+              <%= data0 %>,
+              ],
+              borderColor: "rgba(0,0,255,1)",
+              backgroundColor: "rgba(0,0,0,0)"
+            }
+          ],
+        },
+        options: {
+          title: {
+            display: true,
+            text: ' '
+          },
+          scales: {
+            yAxes: [{
+              ticks: {
+                suggestedMax: 100,
+                suggestedMin: 0,
+                stepSize: 10,
+                callback: function(value, index, values){
+                  return  value +  '%'
+                }
+              }
+            }]
+          },
+        }
+      });
+    };
+    </script>
+
+  </head>
+  <body>
+
+    <h1><%= title %></h1>
+    <canvas id="myChart"></canvas>
+    <h2><a href="./"> ↩︎back </a></h2>
+  </body>
+</html>
