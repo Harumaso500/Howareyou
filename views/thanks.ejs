@@ -15,7 +15,7 @@
           labels: ['<%= date6 %>', '<%= date5 %>', '<%= date4 %>', '<%= date3 %>', '<%= date2 %>', '<%= date1 %>', '<%= date0 %>'],
           datasets: [
             {
-              label: 'sick(%)',
+              label: 'bad health condition(%)',
               data: [
               <%= data6 %>,
               <%= data5 %>,
@@ -32,8 +32,8 @@
         },
         options: {
           title: {
-            display: true,
-            text: ' '
+            display: false,
+            text: 'bad health condition rate'
           },
           scales: {
             yAxes: [{
@@ -53,10 +53,12 @@
     </script>
 
   </head>
-  <body>
+  <body style = "padding:0px 40px; text-align:center; ">
 
-    <h1><%= title %></h1>
+    <h1><%= title %> <div style="font-size:33%;">げんきですか？</div></h1>
     <canvas id="myChart"></canvas>
-    <h2><a href="./"> ↩︎back </a></h2>
+    <h2><a href="./"> Please tell your condition. <div style="font-size:33%;">あなたの体調を教えて下さい。</div></a></h2>
+    <br>
+    <p><small>© 2020 Harumaso. <a href="https://github.com/Harumaso500/Howareyou">view Source</a></small></p>
   </body>
 </html>

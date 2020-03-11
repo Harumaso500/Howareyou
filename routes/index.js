@@ -207,7 +207,7 @@ router.get('/sick', function(req, res, next) {
 router.get('/graph', function(req, res, next) {
   var data = setData();
   res.render('thanks', { 
-    title: 'Good luck!', 
+    title: 'How are you?', 
     data0: data[0], 
     data1: data[1],
     data2: data[2],
@@ -224,4 +224,26 @@ router.get('/graph', function(req, res, next) {
     date6: getYMD(6),  
   });
 });
+
+router.get('/api', function(req, res, next) {
+  var data = setData();
+  res.send({ 
+    data0: data[0], 
+    data1: data[1],
+    data2: data[2],
+    data3: data[3],
+    data4: data[4],
+    data5: data[5],
+    data6: data[6],
+    date0: getYMD(0),
+    date1: getYMD(1),
+    date2: getYMD(2),
+    date3: getYMD(3),
+    date4: getYMD(4),
+    date5: getYMD(5),
+    date6: getYMD(6),  
+  });
+});
+
+
 module.exports = router;
