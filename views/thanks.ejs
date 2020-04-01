@@ -12,19 +12,11 @@
       var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['<%= date6 %>', '<%= date5 %>', '<%= date4 %>', '<%= date3 %>', '<%= date2 %>', '<%= date1 %>', '<%= date0 %>'],
+          labels: <%- date %>,
           datasets: [
             {
               label: 'bad health condition(%)',
-              data: [
-              <%= data6 %>,
-              <%= data5 %>,
-              <%= data4 %>,
-              <%= data3 %>,
-              <%= data2 %>,
-              <%= data1 %>,
-              <%= data0 %>,
-              ],
+              data: <%- data %>,
               borderColor: "rgba(0,0,255,1)",
               backgroundColor: "rgba(0,0,0,0)"
             }

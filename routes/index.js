@@ -27,7 +27,67 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'How are you?' });
 });
 
-function setData(){
+router.get('/mini', function(req, res, next) {
+  res.render('index-mini', { title: 'How are you?' });
+});
+
+function getData(){
+  var sql = "select * from Tshuke order by date";
+
+  var row = db.prepare(sql).all();
+
+  var date = [];
+
+  var i=0;
+  while(i < row.length){
+    date.push(row[i].date);
+    ++i;
+  }
+
+  var sick = [];
+
+  i = 0;
+  while(i < row.length){
+    sick.push( row[i].bunshi* 100/ row[i].bunbo );
+    ++i;
+  }
+
+
+
+  var lastDate = date[date.length-1];
+
+  sql = 
+  "select"                                 +
+  " (select count(peopleID) from Tkenko"   +
+  " where date=?) as Bunbo,"               +
+  " (select count(peopleID) from Tkenko"   +
+  " where date=? and state=1) as Bunshi"   ;
+
+  var tarin_sick = [];
+  var tarin_date = [];
+
+  i = 0;
+  var ymd = getYMD(i);
+  while(ymd != lastDate){
+    row = db.prepare(sql).get(ymd, ymd);
+    tarin_sick.push(row.Bunshi* 100/ row.Bunbo);
+    tarin_date.push(ymd);
+
+    ++i;
+    ymd = getYMD(i);
+  }
+
+  tarin_sick.reverse();
+  tarin_date.reverse();
+
+  // sick.concat(tarin_sick);
+  // date.concat(tarin_date);
+
+  return [date.concat(tarin_date),sick.concat(tarin_sick)];
+
+}
+
+function setData_OLD(){
   var sql = 
     "select"                                 +
     " (select count(peopleID) from Tkenko"   +
@@ -205,43 +265,20 @@ router.get('/sick', function(req, res, next) {
 });
 
 router.get('/graph', function(req, res, next) {
-  var data = setData();
+  var data = getData();
   res.render('thanks', { 
     title: 'How are you?', 
-    data0: data[0], 
-    data1: data[1],
-    data2: data[2],
-    data3: data[3],
-    data4: data[4],
-    data5: data[5],
-    data6: data[6],
-    date0: getYMD(0),
-    date1: getYMD(1),
-    date2: getYMD(2),
-    date3: getYMD(3),
-    date4: getYMD(4),
-    date5: getYMD(5),
-    date6: getYMD(6),  
+    data: JSON.stringify(data[1]),
+    date: JSON.stringify(data[0]),
   });
 });
 
 router.get('/api', function(req, res, next) {
-  var data = setData();
+  var data = getData();
   res.send({ 
-    data0: data[0], 
-    data1: data[1],
-    data2: data[2],
-    data3: data[3],
-    data4: data[4],
-    data5: data[5],
-    data6: data[6],
-    date0: getYMD(0),
-    date1: getYMD(1),
-    date2: getYMD(2),
-    date3: getYMD(3),
-    date4: getYMD(4),
-    date5: getYMD(5),
-    date6: getYMD(6),  
+    title: 'How are you?', 
+    data: data[1],
+    date: data[0],
   });
 });
 
