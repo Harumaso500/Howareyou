@@ -31,6 +31,8 @@ router.get('/mini', function(req, res, next) {
   res.render('index-mini', { title: 'How are you?' });
 });
 
+
+
 function getData(){
   var sql = "select * from Tshuke order by date";
 
@@ -87,6 +89,36 @@ function getData(){
 
 }
 
+function getDataArea(areaID){
+  var sql = 
+  "select date,areaID,count(*) as bunbo, "                +
+  " ifnull( (select count(*) from Tkenko "                +
+  " where date=A.date and areaID=A.areaID and state=1 "   +
+  " group by date,areaID), 0) as bunshi "                 +
+  "from Tkenko as A "                                     +
+  "where (areaID = ?) "                                   +
+  "group by date,areaID "                                 +
+  "order by date "                                        ;
+
+  var rows = db.prepare(sql).all(areaID);
+
+  var sick = [];
+  var date = [];
+
+  var i = 0;
+  while(i < rows.length){
+    sick.push(rows[i].bunshi* 100/ rows[i].bunbo);
+    date.push(rows[i].date);
+    ++i;
+  }
+
+  // sick.concat(tarin_sick);
+  // date.concat(tarin_date);
+
+  return [date,sick];
+
+}
+
 function setData_OLD(){
   var sql = 
     "select"                                 +
@@ -131,31 +163,15 @@ router.get('/fine', function(req, res, next) {
     var peopleID = row.max + 1;
     var date = getNowYMD();
     var state = 0;
-    db.prepare('insert into Tkenko (date, state, peopleID) values (?, ?, ?)').run(
+    db.prepare('insert into Tkenko (date, state, peopleID, areaID) values (?, ?, ?, ?)').run(
       date,
       state,
-      peopleID
+      peopleID,
+      (req.cookies.areaID==""||req.cookies.areaID===undefined) ? null : req.cookies.areaID
     );
-    res.cookie("peopleID",peopleID);
-    // var data = setData();
-    // res.render('thanks', { 
-    //   title: 'Good luck!', 
-    //   data0: data[0], 
-    //   data1: data[1],
-    //   data2: data[2],
-    //   data3: data[3],
-    //   data4: data[4],
-    //   data5: data[5],
-    //   data6: data[6],
-    //   date0: getYMD(0),
-    //   date1: getYMD(1),
-    //   date2: getYMD(2),
-    //   date3: getYMD(3),
-    //   date4: getYMD(4),
-    //   date5: getYMD(5),
-    //   date6: getYMD(6),
-    // });
-    res.redirect("/graph");
+    var exdt = new Date(); exdt.setDate(exdt.getDate()+10);
+    res.cookie("peopleID",peopleID,{expires: exdt});
+    res.redirect("/thanks");
   }else{
     // motte kita hito
       var peopleID = motteru;
@@ -165,30 +181,13 @@ router.get('/fine', function(req, res, next) {
         peopleID,
         date
       );
-      db.prepare('insert into Tkenko (date, state, peopleID) values (?, ?, ?)').run(
+      db.prepare('insert into Tkenko (date, state, peopleID, areaID) values (?, ?, ?, ?)').run(
         date,
         state,
-        peopleID
+        peopleID,
+        (req.cookies.areaID==""||req.cookies.areaID===undefined) ? null : req.cookies.areaID
       );
-      // var data = setData();
-      // res.render('thanks', { 
-      //   title: 'Good luck!', 
-      //   data0: data[0], 
-      //   data1: data[1],
-      //   data2: data[2],
-      //   data3: data[3],
-      //   data4: data[4],
-      //   data5: data[5],
-      //   data6: data[6],
-      //   date0: getYMD(0),
-      //   date1: getYMD(1),
-      //   date2: getYMD(2),
-      //   date3: getYMD(3),
-      //   date4: getYMD(4),
-      //   date5: getYMD(5),
-      //   date6: getYMD(6),  
-      // });
-      res.redirect("/graph");
+      res.redirect("/thanks");
   }
 
 });
@@ -203,31 +202,15 @@ router.get('/sick', function(req, res, next) {
     var peopleID = row.max + 1;
     var date = getNowYMD();
     var state = 1;
-    db.prepare('insert into Tkenko (date, state, peopleID) values (?, ?, ?)').run(
+    db.prepare('insert into Tkenko (date, state, peopleID, areaID) values (?, ?, ?, ?)').run(
       date,
       state,
-      peopleID
+      peopleID,
+      (req.cookies.areaID==""||req.cookies.areaID===undefined) ? null : req.cookies.areaID
     );
-    res.cookie("peopleID",peopleID);
-    // var data = setData();
-    // res.render('thanks', { 
-    //   title: 'Take a rest.', 
-    //   data0: data[0], 
-    //   data1: data[1],
-    //   data2: data[2],
-    //   data3: data[3],
-    //   data4: data[4],
-    //   data5: data[5],
-    //   data6: data[6],
-    //   date0: getYMD(0),
-    //   date1: getYMD(1),
-    //   date2: getYMD(2),
-    //   date3: getYMD(3),
-    //   date4: getYMD(4),
-    //   date5: getYMD(5),
-    //   date6: getYMD(6),
-    // });
-    res.redirect("/graph");
+    var exdt = new Date(); exdt.setDate(exdt.getDate()+10);
+    res.cookie("peopleID",peopleID,{expires: exdt});
+    res.redirect("/thanks");
   }else{
     // motte kita hito
       var peopleID = motteru;
@@ -237,37 +220,55 @@ router.get('/sick', function(req, res, next) {
           peopleID,
           date
       );
-      db.prepare('insert into Tkenko (date, state, peopleID) values (?, ?, ?)').run(
+      db.prepare('insert into Tkenko (date, state, peopleID, areaID) values (?, ?, ?, ?)').run(
         date,
         state,
-        peopleID
+        peopleID,
+        (req.cookies.areaID==""||req.cookies.areaID===undefined) ? null : req.cookies.areaID
       );
-      // var data = setData();
-      // res.render('thanks', { 
-      //   title: 'Take a rest.', 
-      //   data0: data[0], 
-      //   data1: data[1],
-      //   data2: data[2],
-      //   data3: data[3],
-      //   data4: data[4],
-      //   data5: data[5],
-      //   data6: data[6],
-      //   date0: getYMD(0),
-      //   date1: getYMD(1),
-      //   date2: getYMD(2),
-      //   date3: getYMD(3),
-      //   date4: getYMD(4),
-      //   date5: getYMD(5),
-      //   date6: getYMD(6),  
-      // });
-      res.redirect("/graph");
+      res.redirect("/thanks");
   }
 });
 
+router.get('/area', function(req, res, next) {
+    var motteru = req.cookies.peopleID;
+    if (motteru === undefined){
+      // motte konai hito -> ERROR
+      res.redirect("/");
+    }else{
+        // motte kita hito
+        var areaID = req.query.areaID;
+        var peopleID = motteru;
+        var date = getNowYMD();
+        db.prepare('update Tkenko set areaID=? where peopleID=? and date=?').run(
+            (areaID=="") ? null : areaID,
+            peopleID,
+            date
+        );
+        var exdt = new Date(); exdt.setDate(exdt.getDate()+10);
+        res.cookie("areaID",areaID,{expires: exdt});
+    }
+    res.redirect("/thanks");
+});
+
+router.get('/thanks', function(req, res, next) {
+    res.render('thanks', { 
+      title: 'How are you?', 
+      areaID: (req.cookies.areaID==""||req.cookies.areaID===undefined) ? "''" : req.cookies.areaID,
+    });
+});
+  
 router.get('/graph', function(req, res, next) {
-  var data = getData();
-  res.render('thanks', { 
+  var areaID = req.query.areaID;
+  var data;
+  if(areaID == "0" || areaID == undefined){
+    data = getData();
+  }else{
+    data = getDataArea(areaID);
+  };
+  res.render('graph', { 
     title: 'How are you?', 
+    areaID: (areaID == "0" || areaID == undefined) ? 0 : areaID,
     data: JSON.stringify(data[1]),
     date: JSON.stringify(data[0]),
   });
