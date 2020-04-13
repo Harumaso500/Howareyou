@@ -251,10 +251,30 @@ router.get('/area', function(req, res, next) {
     res.redirect("/thanks");
 });
 
+router.get('/temp', function(req, res, next) {
+  var motteru = req.cookies.peopleID;
+  if (motteru === undefined){
+    // motte konai hito -> ERROR
+    res.redirect("/");
+  }else{
+      // motte kita hito
+      var temp = req.query.temp;
+      var peopleID = motteru;
+      var date = getNowYMD();
+      db.prepare('update Tkenko set temp=? where peopleID=? and date=?').run(
+          (temp=="") ? null : temp,
+          peopleID,
+          date
+      );
+  }
+  res.redirect("/thanks?temp="+ temp);
+});
+
 router.get('/thanks', function(req, res, next) {
     res.render('thanks', { 
       title: 'How are you?', 
       areaID: (req.cookies.areaID==""||req.cookies.areaID===undefined) ? "''" : req.cookies.areaID,
+      temp: req.query.temp,
     });
 });
   

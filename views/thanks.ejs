@@ -4,15 +4,12 @@
 
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
-    <meta name="viewport" content="
-      width=320,
-      height=480,
-      user-scalable=yes
-    "/>
+    <meta name="viewport" content="width=320,height=480,user-scalable=yes">
 
     <script>
         window.onload = function(){
             document.getElementById('sel001').value = <%- areaID %>;
+            document.getElementById('sel002').value = "<%- temp %>";
         }
     </script>
 
@@ -80,6 +77,58 @@
         </form>
     </p>
 
+    <p>
+        <div>Your temperature is:</div>
+        <div style="font-size:66%;">あなたのたいおんは:</div>
+        <form action="temp" method="get">
+            <select id="sel002" name="temp" onchange="">
+                <option value=""  >- 不明 -</option>
+                <option value="36.0">~36.0</option>
+                <option value="36.1">36.1</option>
+                <option value="36.2">36.2</option>
+                <option value="36.3">36.3</option>
+                <option value="36.4">36.4</option>
+                <option value="36.5">36.5</option>
+                <option value="36.6">36.6</option>
+                <option value="36.7">36.7</option>
+                <option value="36.8">36.8</option>
+                <option value="36.9">36.9</option>
+                <option value="37.0">37.0</option>
+                <option value="37.1">37.1</option>
+                <option value="37.2">37.2</option>
+                <option value="37.3">37.3</option>
+                <option value="37.4">37.4</option>
+                <option value="37.5">37.5</option>
+                <option value="37.6">37.6</option>
+                <option value="37.7">37.7</option>
+                <option value="37.8">37.8</option>
+                <option value="37.9">37.9</option>
+                <option value="38.0">38.0</option>
+                <option value="38.1">38.1</option>
+                <option value="38.2">38.2</option>
+                <option value="38.3">38.3</option>
+                <option value="38.4">38.4</option>
+                <option value="38.5">38.5</option>
+                <option value="38.6">38.6</option>
+                <option value="38.7">38.7</option>
+                <option value="38.8">38.8</option>
+                <option value="38.9">38.9</option>
+                <option value="39.0">39.0</option>
+                <option value="39.1">39.1</option>
+                <option value="39.2">39.2</option>
+                <option value="39.3">39.3</option>
+                <option value="39.4">39.4</option>
+                <option value="39.5">39.5</option>
+                <option value="39.6">39.6</option>
+                <option value="39.7">39.7</option>
+                <option value="39.8">39.8</option>
+                <option value="39.9">39.9</option>
+                <option value="40.0">40.0~</option>
+            </select>
+            <input id="s002" type="submit" value="Send / 送信">
+        </form>
+    </p>
+
     <p><a href="graph">
         <div><img src="images/graphicon.png" style="border:1px solid;"></div>
         <div>View graph</div>
@@ -87,7 +136,7 @@
     </a></p>
 
     <p><small>
-        © 2020 Harumaso. <a href="https://github.com/Harumaso500/Howareyou">view Source</a>
+        CC-BY 2020 Harumaso. <a href="https://github.com/Harumaso500/Howareyou">view Source</a>
     </small></p>
   </body>
 </html>
